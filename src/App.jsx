@@ -1,24 +1,34 @@
 import MovieCard from './components/MovieCard.jsx'
 import Navbar from './components/Navbar.jsx'
-
+import { useState,useEffect } from 'react'
 
 const App = () => {
+
+  const [moviesList, setMovieList] = useState([])
+
+  useEffect(() => {
+    async function callMovieApi() {
+      const result = await fetch('/movieApi')
+
+      const moviesData = await result.json()
+
+      setMovieList(moviesData.results)
+    }
+    callMovieApi()
+  },[])
+
+
+
   return(
     <div>
-
     <Navbar />
-    <main className='px-3'>
+    <main className='p-5'>
       <div className='row'>
-        <div className='col-4'>
-      <MovieCard title="Aanandham (2016)" image="https://e1.pxfuel.com/desktop-wallpaper/812/406/desktop-wallpaper-aanandam-aanandham-movie-thumbnail.jpg" desc="Aanandam is a 2016 Indian Malayalam-language coming of age film written and directed Ganesh Raj in his directorial debut. Cinematography was by Anend C. Chandran." alt="Aanandham"/>
-      </div>
-      <div className='col-4'>
-      <MovieCard title="Ghajini (2005)" image="https://sund-images.sunnxt.com/8848/1000x1500_GhajiniTamil_8848_b5f66417-037f-41f0-9342-0371af3992b1.jpg" desc="Aanandam is a 2016 Indian Malayalam-language coming of age film written and directed Ganesh Raj in his directorial debut. Cinematography was by Anend C. Chandran." alt="Ghajini"/>
-      </div>
-      <div className='col-4'>
-      <MovieCard title="Ghajini (2005)" image="https://sund-images.sunnxt.com/8848/1000x1500_GhajiniTamil_8848_b5f66417-037f-41f0-9342-0371af3992b1.jpg" desc="Aanandam is a 2016 Indian Malayalam-language coming of age film written and directed Ganesh Raj in his directorial debut. Cinematography was by Anend C. Chandran." alt="Ghajini"/>
-      </div>
-      
+          {moviesList.map((movie) => {
+          return <div className='col-4' key={movie.id}>
+            <MovieCard title={movie.title} image = {"https://image.tmdb.org/t/p/original/" + movie.poster_path} desc={movie.overview.substring(0, 150)} />
+            </div>
+          })}
       
       </div>
     </main>
